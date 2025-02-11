@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     triggers {
-        pollSCM('H/5 * * * *') // SCM პოლინგი ყოველ 5 წუთში
+        pollSCM('H/5 * * * *')
     }
 
     stages {
@@ -14,7 +14,6 @@ pipeline {
 
         stage('User Input') {
             steps {
-                // მომხმარებლისგან input-ის მოთხოვნა
                 script {
                     def userInput = input(
                         id: 'userInput', 
