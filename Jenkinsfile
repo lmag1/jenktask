@@ -1,20 +1,67 @@
 pipeline {
     agent any
+
+    triggers {
+        // მხოლოდ stage ბრანჩზე კომიტის დროს გაეშვება
+        pollSCM('H/5 * * * *') // SCM პოლინგი ყოველ 5 წუთში
+    }
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo 'Building the project...'
+                // GitHub-იდან რეპოზიტორიის ჩამოტვირთვა
+                git branch: 'stage', url: 'https://github.com/your-username/your-repo.git'
             }
         }
-        stage('Test') {
+
+        stage('User Input') {
             steps {
-                echo 'Running tests...'
+                // მომხმარებლისგან input-ის მოთხოვნა
+                script {
+                    def userInput = input(
+                        id: 'userInput', 
+                        message: 'გსურთ გაგრძელება?', 
+                        parameters: [
+                            choice(name: 'choice', choices: ['yes', 'no'], description: 'აირჩიეთ yes ან no')
+                        ]
+                    )
+                    if (userInput != 'yes') {
+                        error("მომხმარებელმა არჩია 'no'. პაიპლაინი შეჩერებულია.")
+                    }
+                }
             }
         }
-        stage('Deploy') {
+
+        stage('Parallel Execution') {
             steps {
-                echo 'Deploying the project...'
+                parallel(
+                    "Curl Google": {
+                        script {
+                            try {
+                                sh 'curl -I https://google.ge'
+                            } catch (Exception e) {
+                                echo "this url does not work"
+                            }
+                        }
+                    },
+                    "Curl Error URL": {
+                        script {
+                            try {
+                                sh 'curl -I https://error.ueczo.com'
+                            } catch (Exception e) {
+                                echo "this url does not work"
+                            }
+                        }
+                    }
+                )
             }
         }
     }
+
+    post {
+        always {
+            echo "პაიპლაინი წარმატებით დასრულდა."
+        }
+    }
 }
+
