@@ -2,14 +2,12 @@ pipeline {
     agent any
 
     triggers {
-        // მხოლოდ stage ბრანჩზე კომიტის დროს გაეშვება
         pollSCM('H/5 * * * *') // SCM პოლინგი ყოველ 5 წუთში
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // GitHub-იდან რეპოზიტორიის ჩამოტვირთვა
                 git branch: 'stage', url: 'https://github.com/lmag1/jenktask.git'
             }
         }
