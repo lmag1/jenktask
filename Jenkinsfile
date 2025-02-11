@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // GitHub-იდან რეპოზიტორიის ჩამოტვირთვა
-                git branch: 'stage', url: 'https://github.com/your-username/your-repo.git'
+                git branch: 'stage', url: 'https://github.com/lmag1/jenktask.git'
             }
         }
 
